@@ -12,7 +12,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -21,7 +20,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Slf4j
 @Service
 @Data
 public class UserServiceImpl implements UserService {
@@ -45,13 +43,11 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public List<Role> getListRoles() {
-    log.info("getListRoles from service");
     return roleRepository.findAll();
   }
 
   @Override
   public List<Role> getListByRole(List<String> name) {
-    log.info("getListByRole from service");
     return roleRepository.findAllByRole(name);
   }
 
@@ -64,13 +60,11 @@ public class UserServiceImpl implements UserService {
     }
     user.setPassword(bCryptPasswordEncoder().encode(user.getPassword()));
     userRepository.save(user);
-    log.info("saveUser from service");
     return true;
   }
 
   @Override
   public Set<User> getSetUsers() {
-    log.info("getSetUsers from service");
     return userRepository.findAll().stream().sorted()
         .collect(Collectors.toCollection(LinkedHashSet::new));
   }
@@ -93,7 +87,6 @@ public class UserServiceImpl implements UserService {
 
     archivateUser(archive);
     userRepository.deleteById(id);
-    log.info("deleteUserById from service");
   }
 
   @Override
@@ -106,18 +99,15 @@ public class UserServiceImpl implements UserService {
       user.setPassword(bCryptPasswordEncoder().encode(user.getPassword()));
     }
     userRepository.save(user);
-    log.info("updateUser from service");
   }
 
   @Override
   public User findUserById(Long id) {
-    log.info("findUserById from service");
     return userRepository.findById(id).orElseThrow();
   }
 
   @Override
   public User findUserByUsername(String username) {
-    log.info("findUserByUsername from service");
     return userRepository.findByUsername(username);
   }
 
@@ -128,7 +118,6 @@ public class UserServiceImpl implements UserService {
     if (user == null) {
       throw new UsernameNotFoundException(String.format("User '%s' not found", username));
     }
-    log.info("loadUserByUsername from service");
     return user;
   }
 
@@ -141,27 +130,23 @@ public class UserServiceImpl implements UserService {
     }
     user.setPassword(bCryptPasswordEncoder().encode(user.getPassword()));
     userAchrive.save(user);
-    log.info("User archivated");
     return true;
   }
 
 
   @Override
   public UserArchive findUserArchiveByUsername(String username) {
-    log.info("findUserArchiveByUsername from service");
     return userAchrive.findByUsername(username);
   }
 
   @Override
   public UserArchive findUserArchiveById(Long id) {
-    log.info("findUserArchiveById from service");
     return userAchrive.findById(id).orElseThrow();
   }
 
 
   @Override
   public Set<UserArchive> getSetUsersArchive() {
-    log.info("getSetUsersArchive from service");
     return userAchrive.findAll().stream().sorted()
         .collect(Collectors.toCollection(LinkedHashSet::new));
   }
@@ -184,7 +169,5 @@ public class UserServiceImpl implements UserService {
 
     userRepository.save(user);
     userAchrive.deleteById(id);
-    log.info("User unarchivated");
-    log.info("unArchivateUser from service");
   }
 }
